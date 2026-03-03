@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Монтажник LK — Мини-игра | Suprlan LK</title>
+    <meta name="description" content="Мини-игра в стиле ретро-консоли. Лови монтажные коробки Suprlan LK!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0 2rem;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a.logo {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        nav .nav-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        nav .nav-links a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        nav .nav-links a.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .accent {
+            color: #e53935;
+        }
+
+        /* Game Container */
+        .game-page {
+            padding-top: 56px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-wrapper {
+            position: relative;
+            margin: 1.5rem auto;
+            max-width: 700px;
+            width: 100%;
+            padding: 0 1rem;
+        }
+
+        /* LCD Screen Frame */
+        .lcd-frame {
+            background: #2a2a2a;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow:
+                0 0 0 3px #1a1a1a, 0 0 0 6px #333,
+                0 8px 32px rgba(0, 0, 0, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.05);
+        }
+
+        .lcd-label {
+            text-align: center;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.6rem;
+            color: #888;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .lcd-screen {
+            background: #c4cfa1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .lcd-screen::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px,
+                    transparent 1px, transparent 3px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+        }
+
+        /* Controls */
+        .controls-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding: 0 4px;
+        }
+
+        .control-btn {
+            background: #1a1a1a;
+            border: 2px solid #444;
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 1.3rem;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: all 0.1s;
+            box-shadow: 0 3px 0 #111;
+        }
+
+        .control-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #111;
+        }
+
+        .dpad {
+            display: flex;
+            gap: 4px;
+        }
+
+        .score-display {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.7rem;
+            color: #888;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .action-btn {
+            background: #c62828;
+            border: 2px solid #e53935;
+            color: #fff;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.5rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            box-shadow: 0 3px 0 #8e0000;
+        }
+
+        .action-btn:active {
+            background: #b71c1c;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            margin: 1.5rem auto;
+            max-width: 700px;
+            width: 100%;
+            padding: 0 1rem;
+        }
+
+        .leaderboard h2 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.75rem;
+            color: #e53935;
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .leaderboard-table {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+        }
+
+        .lb-row {
+            display: flex;
+            padding: 10px 16px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.55rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            align-items: center;
+        }
+
+        .lb-row:last-child {
+            border-bottom: none;
+        }
+
+        .lb-row.header {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.45rem;
+        }
+
+        .lb-rank {
+            width: 30px;
+            color: #e53935;
+        }
+
+        .lb-name {
+            flex: 1;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .lb-score {
+            width: 70px;
+            text-align: right;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .lb-row.gold .lb-rank {
+            color: #ffd700;
+        }
+
+        .lb-row.silver .lb-rank {
+            color: #c0c0c0;
+        }
+
+        .lb-row.bronze .lb-rank {
+            color: #cd7f32;
+        }
+
+        .game-footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.2);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Overlays */
+        .overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            background: rgba(196, 207, 161, 0.92);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .overlay.active {
+            display: flex;
+        }
+
+        .overlay h1 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 1rem;
+            color: #2d3319;
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .overlay p {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.55rem;
+            color: #4a5530;
+            text-align: center;
+            line-height: 2;
+            margin-bottom: 12px;
+        }
+
+        .overlay .blink {
+            animation: blink 1s steps(1) infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .name-input-wrap {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 20;
+            background: rgba(196, 207, 161, 0.95);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .name-input-wrap.active {
+            display: flex;
+        }
+
+        .name-input-wrap h2 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.7rem;
+            color: #2d3319;
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .name-input-wrap input {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.8rem;
+            background: rgba(45, 51, 25, 0.1);
+            border: 2px solid #2d3319;
+            color: #2d3319;
+            padding: 10px 14px;
+            text-align: center;
+            width: 200px;
+            border-radius: 4px;
+            outline: none;
+            text-transform: uppercase;
+        }
+
+        .name-input-wrap button {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.5rem;
+            background: #2d3319;
+            color: #c4cfa1;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .game-wrapper {
+                padding: 0 0.5rem;
+            }
+
+            .lcd-frame {
+                padding: 10px;
+                border-radius: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Suprlan <span class="accent">LK</span></a>
+        <div class="nav-links">
+            <a href="index.html">Главная</a>
+            <a href="instruction.html">Инструкция</a>
+            <a href="examples.html">Примеры</a>
+            <a href="game.html" class="active">Игра</a>
+        </div>
+    </nav>
+
+    <div class="game-page">
+        <div class="game-wrapper">
+            <div class="lcd-frame">
+                <div class="lcd-label">SUPRLAN LK &bull; МОНТАЖНИК</div>
+                <div class="lcd-screen" id="screenWrap">
+                    <canvas id="gameCanvas" width="640" height="720"></canvas>
+                    <div class="overlay active" id="startScreen">
+                        <h1>МОНТАЖНИК<br><span style="color:#6b7a3d">LK</span></h1>
+                        <p>Лови монтажные<br>коробки Suprlan LK!</p>
+                        <p>← → / Ф В / тач</p>
+                        <p class="blink">НАЖМИ СТАРТ</p>
+                    </div>
+                    <div class="overlay" id="gameOverScreen">
+                        <h1>GAME OVER</h1>
+                        <p id="gameOverText"></p>
+                        <p id="finalScore"></p>
+                        <p class="blink">НАЖМИ СТАРТ</p>
+                    </div>
+                    <div class="name-input-wrap" id="nameInput">
+                        <h2>НОВЫЙ РЕКОРД!<br>🏆</h2>
+                        <input type="text" id="playerName" maxlength="10" placeholder="ИМЯ">
+                        <button id="submitName">СОХРАНИТЬ</button>
+                    </div>
+                </div>
+                <div class="controls-info">
+                    <div class="dpad">
+                        <button class="control-btn" id="btnLeft">◀</button>
+                        <button class="control-btn" id="btnRight">▶</button>
+                    </div>
+                    <div class="score-display">
+                        <div>SCORE</div>
+                        <div id="hudScore">0</div>
+                    </div>
+                    <button class="control-btn action-btn" id="btnStart">GO</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="leaderboard">
+            <h2>🏆 ТАБЛИЦА РЕКОРДОВ</h2>
+            <div class="leaderboard-table" id="leaderboardTable">
+                <div class="lb-row header">
+                    <div class="lb-rank">#</div>
+                    <div class="lb-name">ИМЯ</div>
+                    <div class="lb-score">ОЧКИ</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-footer">
+            Suprlan LK — монтажные коробки, которые выдержат всё.<br>Даже плохого монтажника.
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  МОНТАЖНИК LK — Enhanced Retro LCD Game v2
+        // ============================================================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;   // 640
+        const H = canvas.height;  // 720
+
+        const COL = {
+            bg: '#c4cfa1',
+            dark: '#2d3319',
+            mid: '#6b7a3d',
+            light: '#9aab6f',
+            ghost: 'rgba(45,51,25,0.12)'
+        };
+
+        // ---- Game State ----
+        let state = 'start';
+        let score = 0;
+        let level = 1;
+        let dropInterval = 100;  // faster drops
+        let frameCount = 0;
+        let catchCombo = 0;
+
+        // Player
+        const player = {
+            x: W / 2,
+            y: H - 110,
+            speed: 5,
+            baseSpeed: 5,
+            dir: 0,
+            bucketW: 56,
+            bucketH: 22,
+            stackedBoxes: 0,    // boxes in bucket
+            stackWobble: 0,     // wobble angle
+            stackWobbleVel: 0,  // wobble velocity
+            stunTimer: 0,       // frames frozen when tripping
+            stunMsg: '',        // what player says when stunned
+        };
+
+        // Installers on ladders
+        const installers = [
+            {
+                x: 80, y: 100, side: 'left', dropX: 120, armPhase: 0,
+                speechText: '', speechTimer: 0
+            },
+            {
+                x: W - 80, y: 100, side: 'right', dropX: W - 120, armPhase: 0,
+                speechText: '', speechTimer: 0
+            },
+        ];
+
+        let boxes = [];         // falling
+        let floorBoxes = [];    // on the floor (obstacles)
+        let messages = [];
+
+        // ---- Messages ----
+        const missMessages = [
+            "Ничего страшного —\nона ударопрочная!",
+            "IK10 — выдержит!",
+            "Корпус цел,\nсовесть нет.",
+            "Гарантия\nне аннулирована!",
+            "Даже не\nпоцарапалась!",
+            "Пол жалко,\nкоробку — нет.",
+            "IP54 — ей пофиг.",
+            "Антивандальная же!",
+        ];
+
+        const stunMessages = [
+            "Ёлки-палки!",
+            "Чёрт!",
+            "Бл... коробка!",
+            "Аккуратнее!",
+            "Вот блин!",
+            "Опять!",
+            "Да ладно!",
+            "Кто бросил?!",
+            "#@$%!",
+            "Под ноги смотри!",
+        ];
+
+        const gameOverMessages = [
+            "Я меняю работу...",
+            "Уволен по статье\n'рукожоп'",
+            "Монтажник из тебя\nкак из меня балерина",
+            "Бригадир будет\nв ярости!",
+            "Заказчик уже\nзвонит...",
+            "Пора в отпуск...",
+        ];
+
+        const catchMessages = ["+1", "Поймал!", "Красавчик!", "Есть!", "Класс!", "Опа!"];
+
+        const installerComments = [
+            "Лови давай!",
+            "Рот не разевай!",
+            "Ну что, монтажник?",
+            "Не спи!",
+            "Ха-ха!",
+            "Осторожнее!",
+            "Держи крепче!",
+            "Эй, внизу!",
+            "Сегодня партия\nбольшая!",
+            "Я тут до вечера!",
+            "Не урони!",
+            "Бригадир смотрит!",
+            "Давай быстрее!",
+            "Ещё одну!",
+        ];
+
+        // ---- Audio ----
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        function initAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+        function beep(freq, dur, vol = 0.08) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value = freq; osc.type = 'square';
+            gain.gain.value = vol; osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+            osc.stop(audioCtx.currentTime + dur);
+        }
+
+        // ---- Drawing Helpers ----
+        function drawRect(x, y, w, h, color = COL.dark) {
+            ctx.fillStyle = color;
+            ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+        }
+        function drawCircle(x, y, r, color = COL.dark) {
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.arc(Math.round(x), Math.round(y), r, 0, Math.PI * 2); ctx.fill();
+        }
+        function drawText(text, x, y, size = 12, color = COL.dark, align = 'center') {
+            ctx.fillStyle = color;
+            ctx.font = `${size}px 'Press Start 2P', monospace`;
+            ctx.textAlign = align; ctx.textBaseline = 'middle';
+            text.split('\n').forEach((line, i) => {
+                ctx.fillText(line, Math.round(x), Math.round(y + i * (size + 4)));
+            });
+        }
+
+        // ---- Draw Speech Bubble ----
+        function drawSpeechBubble(x, y, text, pointDir = 'down') {
+            ctx.font = "9px 'Press Start 2P', monospace";
+            const lines = text.split('\n');
+            const maxW = Math.max(...lines.map(l => ctx.measureText(l).width));
+            const pw = maxW + 16;
+            const ph = lines.length * 14 + 10;
+            const bx = x - pw / 2;
+            const by = y - ph - 12;
+
+            // Bubble
+            ctx.fillStyle = COL.dark;
+            ctx.beginPath();
+            ctx.roundRect(bx - 2, by - 2, pw + 4, ph + 4, 4);
+            ctx.fill();
+            ctx.fillStyle = COL.bg;
+            ctx.beginPath();
+            ctx.roundRect(bx, by, pw, ph, 3);
+            ctx.fill();
+
+            // Pointer
+            ctx.fillStyle = COL.dark;
+            ctx.beginPath();
+            ctx.moveTo(x - 5, by + ph + 2);
+            ctx.lineTo(x + 5, by + ph + 2);
+            ctx.lineTo(x, by + ph + 10);
+            ctx.closePath();
+            ctx.fill();
+
+            // Text
+            ctx.fillStyle = COL.dark;
+            ctx.font = "9px 'Press Start 2P', monospace";
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            lines.forEach((line, i) => {
+                ctx.fillText(line, x, by + 10 + i * 14);
+            });
+        }
+
+        // ---- Draw Mounting Box ----
+        function drawMountingBox(cx, cy, size, color = COL.dark) {
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.arc(cx, cy, size, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = COL.bg;
+            ctx.beginPath(); ctx.arc(cx, cy, size * 0.65, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.arc(cx, cy, size * 0.2, 0, Math.PI * 2); ctx.fill();
+            for (let a = 0; a < 4; a++) {
+                const angle = (a / 4) * Math.PI * 2 - Math.PI / 4;
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(cx + Math.cos(angle) * size * 0.45, cy + Math.sin(angle) * size * 0.45,
+                    size * 0.08, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // ---- Draw Installer on Ladder ----
+        function drawInstaller(inst) {
+            const x = inst.x, y = inst.y;
+            const flip = inst.side === 'right' ? -1 : 1;
+
+            // Ladder
+            const lx = x + flip * 24;
+            drawRect(lx - 4, y - 40, 8, 260, COL.dark);
+            drawRect(lx + flip * 32 - 4, y - 40, 8, 260, COL.dark);
+            for (let i = 0; i < 8; i++) drawRect(lx - 1, y - 28 + i * 32, flip * 34, 5, COL.dark);
+
+            // Body
+            drawRect(x - 12, y + 12, 24, 36, COL.dark);
+            // Head
+            drawCircle(x, y, 14, COL.dark);
+            drawRect(x - 18, y - 7, 36, 7, COL.dark); // hat
+
+            // Arms
+            const armY = y + 22;
+            const armLen = inst.armPhase > 0 ? 34 + inst.armPhase * 2 : 30;
+            drawRect(x + flip * 12, armY, flip * armLen, 6, COL.dark);
+
+            if (inst.armPhase > 0 && inst.armPhase < 10) {
+                drawMountingBox(x + flip * (12 + armLen), armY - 8, 16, COL.dark);
+            }
+
+            // Legs
+            drawRect(x - 7, y + 48, 6, 24, COL.dark);
+            drawRect(x + 1, y + 48, 6, 24, COL.dark);
+
+            // Speech bubble
+            if (inst.speechTimer > 0) {
+                ctx.globalAlpha = Math.min(1, inst.speechTimer / 15);
+                drawSpeechBubble(x + flip * 10, y - 30, inst.speechText);
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // ---- Draw Player ----
+        function drawPlayer() {
+            const x = player.x;
+            const y = player.y;
+            const isStunned = player.stunTimer > 0;
+
+            // Wobble offset for stun
+            const stunSway = isStunned ? Math.sin(frameCount * 0.5) * 3 : 0;
+
+            ctx.save();
+            ctx.translate(x + stunSway, y);
+
+            // Head
+            drawCircle(0, -36, 14, COL.dark);
+            drawRect(-18, -43, 36, 7, COL.dark); // hat
+
+            // Face
+            ctx.fillStyle = COL.bg;
+            ctx.beginPath(); ctx.arc(0, -34, 8, 0, Math.PI * 2); ctx.fill();
+            // Eyes
+            if (isStunned) {
+                // Dizzy eyes
+                drawText('x', -4, -36, 6, COL.dark); drawText('x', 4, -36, 6, COL.dark);
+            } else {
+                drawRect(-5, -37, 3, 3, COL.dark); drawRect(2, -37, 3, 3, COL.dark);
+            }
+
+            // Body
+            drawRect(-14, -22, 28, 36, COL.dark);
+            drawRect(-15, 2, 30, 5, COL.mid); // belt
+
+            // Legs
+            drawRect(-12, 14, 9, 26, COL.dark);
+            drawRect(3, 14, 9, 26, COL.dark);
+            drawRect(-14, 38, 14, 7, COL.dark);
+            drawRect(0, 38, 14, 7, COL.dark);
+
+            // Arms
+            drawRect(-30, -18, 16, 6, COL.dark);
+            drawRect(14, -18, 16, 6, COL.dark);
+
+            // Bucket
+            const bx = 0, by = -28;
+            const bw = player.bucketW, bh = player.bucketH;
+
+            ctx.fillStyle = COL.dark;
+            ctx.beginPath();
+            ctx.moveTo(bx - bw / 2, by - bh);
+            ctx.lineTo(bx + bw / 2, by - bh);
+            ctx.lineTo(bx + bw / 2 - 7, by);
+            ctx.lineTo(bx - bw / 2 + 7, by);
+            ctx.closePath(); ctx.fill();
+
+            ctx.fillStyle = COL.light;
+            ctx.beginPath();
+            ctx.moveTo(bx - bw / 2 + 3, by - bh + 3);
+            ctx.lineTo(bx + bw / 2 - 3, by - bh + 3);
+            ctx.lineTo(bx + bw / 2 - 9, by - 2);
+            ctx.lineTo(bx - bw / 2 + 9, by - 2);
+            ctx.closePath(); ctx.fill();
+
+            // Stacked boxes in bucket — tower!
+            if (player.stackedBoxes > 0) {
+                ctx.save();
+                ctx.translate(0, by - bh);
+                ctx.rotate(player.stackWobble * 0.015);
+
+                // Stack in 3 columns
+                const cols = 3;
+                const bSize = 8;
+                const colSpacing = bSize * 2.2;
+                const rowHeight = bSize * 1.8;
+                for (let i = 0; i < player.stackedBoxes; i++) {
+                    const col = i % cols;
+                    const row = Math.floor(i / cols);
+                    const bX = (col - 1) * colSpacing; // -1, 0, 1 centered
+                    const bY = -row * rowHeight;
+                    drawMountingBox(bX, bY, bSize, COL.dark);
+                }
+                ctx.restore();
+            }
+
+            ctx.restore();
+
+            // Stun speech bubble
+            if (isStunned && player.stunMsg) {
+                const stackRows = Math.ceil(player.stackedBoxes / 3);
+                drawSpeechBubble(x, y - 60 - stackRows * 14, player.stunMsg);
+            }
+        }
+
+        // ---- Draw Ground & Floor Boxes ----
+        function drawGround() {
+            const groundY = H - 50;
+            drawRect(0, groundY, W, 50, COL.dark);
+
+            // Floor boxes (obstacles)
+            floorBoxes.forEach(fb => {
+                drawMountingBox(fb.x, fb.y, fb.size, COL.mid);
+            });
+        }
+
+        // ---- Draw HUD ----
+        function drawHUD() {
+            drawText(`SCORE: ${score}`, W / 2, 24, 12, COL.dark);
+            drawText(`LVL ${level}`, W - 50, 24, 10, COL.mid);
+
+            // Danger meter — based on floor boxes
+            const maxFloor = 30; // game over threshold
+            const dangerPct = Math.min(1, floorBoxes.length / maxFloor);
+            const meterW = 80, meterH = 10, meterX = 14, meterY = 18;
+            drawRect(meterX, meterY, meterW, meterH, COL.light);
+            drawRect(meterX, meterY, meterW * dangerPct, meterH, dangerPct > 0.7 ? COL.dark : COL.mid);
+            drawText('ЗАВАЛ', meterX + meterW / 2, meterY + meterH + 10, 7, COL.mid);
+
+            // Stack counter
+            if (player.stackedBoxes > 0) {
+                drawText(`🗼 ${player.stackedBoxes}`, W / 2, 44, 9, COL.mid);
+            }
+        }
+
+        // ---- Spawn box ----
+        function spawnBox() {
+            const inst = installers[Math.random() < 0.5 ? 0 : 1];
+            inst.armPhase = 1;
+
+            // Throw to random X position (sometimes straight down, sometimes sideways)
+            const throwStyle = Math.random();
+            let targetX;
+            if (throwStyle < 0.3) {
+                targetX = inst.dropX; // straight down
+            } else {
+                // Throw to random position across the field
+                targetX = 80 + Math.random() * (W - 160);
+            }
+            boxes.push({
+                x: inst.dropX,
+                y: inst.y + 40,
+                vx: (targetX - inst.dropX) / 200,  // horizontal velocity
+                vy: 1.5 + level * 0.25,
+                size: 14,
+                active: true,
+            });
+
+            // Installer comment (random chance)
+            if (Math.random() < 0.12) {
+                const comment = installerComments[Math.floor(Math.random() * installerComments.length)];
+                inst.speechText = comment;
+                inst.speechTimer = 240;
+            }
+        }
+
+        // ---- Add to floor ----
+        function addToFloor(box) {
+            const groundY = H - 50;
+            floorBoxes.push({
+                x: box.x + (Math.random() - 0.5) * 30,
+                y: groundY - box.size - Math.random() * 5,
+                size: box.size,
+                tripped: false,  // player hasn't tripped on this one yet
+            });
+
+            const msg = missMessages[Math.floor(Math.random() * missMessages.length)];
+            messages.push({
+                text: msg, x: box.x, y: groundY - 50,
+                life: 180, maxLife: 180, size: 8, color: COL.mid,
+            });
+            beep(150, 0.15, 0.06);
+        }
+
+        // ---- Update ----
+        function update() {
+            if (state !== 'playing') return;
+            frameCount++;
+
+            // --- Player movement ---
+            if (player.stunTimer > 0) {
+                player.stunTimer--;
+                // Can't move while stunned
+            } else {
+                player.x += player.dir * player.speed;
+                player.x = Math.max(player.bucketW / 2 + 20, Math.min(W - player.bucketW / 2 - 20, player.x));
+
+                // Check tripping on floor boxes (once per box)
+                floorBoxes.forEach(fb => {
+                    if (fb.tripped) return; // already tripped on this one
+                    const dist = Math.abs(player.x - fb.x);
+                    if (dist < 20 && player.dir !== 0) {
+                        fb.tripped = true;
+                        player.stunTimer = 30; // freeze ~0.5s so comment is readable
+                        player.stunMsg = stunMessages[Math.floor(Math.random() * stunMessages.length)];
+                        beep(200, 0.2, 0.06);
+                    }
+                });
+            }
+
+            // Slow down based on stack height
+            const stackRows = Math.ceil(player.stackedBoxes / 3);
+            const stackSlow = Math.max(0.5, 1 - stackRows * 0.06);
+            player.speed = player.baseSpeed * stackSlow;
+
+            // Stack wobble physics (spring simulation)
+            if (player.dir !== 0 && player.stackedBoxes > 0) {
+                player.stackWobbleVel += player.dir * (0.3 + stackRows * 0.15);
+            }
+            player.stackWobbleVel *= 0.9; // damping
+            player.stackWobbleVel -= player.stackWobble * 0.15; // spring back
+            player.stackWobble += player.stackWobbleVel;
+
+            // Spawn boxes
+            const adjustedInterval = Math.max(45, dropInterval - level * 7);
+            if (frameCount % adjustedInterval === 0) {
+                spawnBox();
+            }
+
+            // Update installer arms
+            installers.forEach(inst => {
+                if (inst.armPhase > 0) { inst.armPhase++; if (inst.armPhase > 20) inst.armPhase = 0; }
+                if (inst.speechTimer > 0) inst.speechTimer--;
+            });
+
+            // Update boxes
+            const stackRowCount = Math.ceil(player.stackedBoxes / 3);
+            const bucketTop = player.y - 28 - player.bucketH - stackRowCount * 14;
+            const bucketLeft = player.x - player.bucketW / 2;
+            const bucketRight = player.x + player.bucketW / 2;
+
+            boxes.forEach(box => {
+                if (!box.active) return;
+                box.y += box.vy;
+                if (box.vx) box.x += box.vx; // horizontal movement
+
+                // Catch check
+                if (box.y + box.size > bucketTop &&
+                    box.y - box.size < bucketTop + player.bucketH + 10 &&
+                    box.x > bucketLeft && box.x < bucketRight &&
+                    player.stunTimer === 0) {
+
+                    box.active = false;
+                    score++;
+                    player.stackedBoxes++;
+                    catchCombo++;
+
+                    // Add wobble on catch
+                    player.stackWobbleVel += (Math.random() - 0.5) * 3;
+
+                    if (score % 10 === 0) {
+                        level++;
+                        messages.push({
+                            text: `УРОВЕНЬ ${level}!`, x: W / 2, y: H / 2,
+                            life: 120, maxLife: 120, size: 14, color: COL.dark,
+                        });
+                        beep(880, 0.1); setTimeout(() => beep(1100, 0.15), 100);
+                    }
+
+                    if (catchCombo > 2) {
+                        messages.push({
+                            text: `COMBO x${catchCombo}!`, x: player.x, y: bucketTop - 20,
+                            life: 80, maxLife: 80, size: 10, color: COL.dark,
+                        });
+                    } else {
+                        const cmsg = catchMessages[Math.floor(Math.random() * catchMessages.length)];
+                        messages.push({
+                            text: cmsg, x: player.x, y: bucketTop - 20,
+                            life: 70, maxLife: 70, size: 8, color: COL.dark,
+                        });
+                    }
+
+                    document.getElementById('hudScore').textContent = score;
+                    beep(660, 0.06);
+                }
+
+                // Hit ground
+                const groundY = H - 50;
+                if (box.y > groundY - box.size) {
+                    box.active = false;
+                    catchCombo = 0;
+                    addToFloor(box);
+                }
+            });
+
+            boxes = boxes.filter(b => b.active);
+
+            // Game over: too many floor boxes
+            if (floorBoxes.length >= 30) {
+                gameOver();
+            }
+
+            // Game over: stack too tall that boxes reach the top
+            if (bucketTop < 120) {
+                // Stack collapsed! Boxes scatter to floor
+                for (let i = 0; i < player.stackedBoxes; i++) {
+                    floorBoxes.push({
+                        x: player.x + (Math.random() - 0.5) * 100,
+                        y: H - 50 - 14 - Math.random() * 10,
+                        size: 14,
+                    });
+                }
+                player.stackedBoxes = 0;
+                player.stackWobble = 0;
+                player.stackWobbleVel = 0;
+                player.stunTimer = 60;
+                player.stunMsg = "БАШНЯ РУХНУЛА!";
+                beep(100, 0.4, 0.1);
+
+                if (floorBoxes.length >= 30) {
+                    gameOver();
+                }
+            }
+
+            // Messages
+            messages.forEach(m => { m.life--; m.y -= 0.4; });
+            messages = messages.filter(m => m.life > 0);
+        }
+
+        // ---- Game Over ----
+        function gameOver() {
+            state = 'gameover';
+            const goMsg = gameOverMessages[Math.floor(Math.random() * gameOverMessages.length)];
+            document.getElementById('gameOverText').textContent = goMsg;
+            document.getElementById('finalScore').textContent = `Очки: ${score} | Башня: ${player.stackedBoxes}`;
+            document.getElementById('gameOverScreen').classList.add('active');
+
+            beep(200, 0.3, 0.08);
+            setTimeout(() => beep(150, 0.3, 0.06), 200);
+            setTimeout(() => beep(100, 0.5, 0.04), 400);
+
+            const lb = getLeaderboard();
+            if (lb.length < 10 || score > lb[lb.length - 1].score) {
+                setTimeout(() => {
+                    document.getElementById('gameOverScreen').classList.remove('active');
+                    document.getElementById('nameInput').classList.add('active');
+                    document.getElementById('playerName').value = '';
+                    document.getElementById('playerName').focus();
+                    state = 'nameinput';
+                }, 4000);
+            }
+        }
+
+        // ---- Start ----
+        function startGame() {
+            initAudio();
+            score = 0; level = 1; frameCount = 0; catchCombo = 0;
+            boxes = []; floorBoxes = []; messages = [];
+            player.x = W / 2; player.dir = 0;
+            player.speed = player.baseSpeed;
+            player.stackedBoxes = 0;
+            player.stackWobble = 0; player.stackWobbleVel = 0;
+            player.stunTimer = 0; player.stunMsg = '';
+            dropInterval = 100;
+            installers.forEach(i => { i.armPhase = 0; i.speechTimer = 0; });
+            state = 'playing';
+            document.getElementById('startScreen').classList.remove('active');
+            document.getElementById('gameOverScreen').classList.remove('active');
+            document.getElementById('nameInput').classList.remove('active');
+            document.getElementById('hudScore').textContent = '0';
+            beep(440, 0.08); setTimeout(() => beep(660, 0.08), 80);
+            setTimeout(() => beep(880, 0.12), 160);
+        }
+
+        // ---- Render ----
+        function render() {
+            ctx.fillStyle = COL.bg;
+            ctx.fillRect(0, 0, W, H);
+            drawGround();
+            installers.forEach(drawInstaller);
+            boxes.forEach(box => {
+                if (box.active) {
+                    drawMountingBox(box.x, box.y, box.size, COL.dark);
+                    drawCircle(box.x, H - 52, box.size * 0.4, COL.ghost);
+                }
+            });
+            drawPlayer();
+            drawHUD();
+
+            // Messages
+            messages.forEach(msg => {
+                ctx.globalAlpha = msg.life / msg.maxLife;
+                drawText(msg.text, msg.x, msg.y, msg.size || 9, msg.color || COL.dark);
+                ctx.globalAlpha = 1;
+            });
+
+            // Warning
+            const dangerLevel = floorBoxes.length / 30;
+            if (dangerLevel > 0.5) {
+                const wa = 0.3 + Math.sin(frameCount * 0.1) * 0.2;
+                ctx.globalAlpha = wa;
+                drawText(dangerLevel > 0.8 ? '🚨 КРИТИЧНО!' : '⚠ ЗАВАЛ!', W / 2, H / 2 - 50, 16, COL.dark);
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // ---- Game Loop ----
+        function gameLoop() { update(); render(); requestAnimationFrame(gameLoop); }
+
+        // ---- Online Leaderboard (jsonblob.com) ----
+        const BLOB_ID = '019cb3c4-7c9b-77a8-b312-596e1eccdc06';
+        const BLOB_URL = `https://jsonblob.com/api/jsonBlob/${BLOB_ID}`;
+        let cachedLeaderboard = [];
+
+        async function fetchLeaderboard() {
+            try {
+                const res = await fetch(BLOB_URL);
+                if (res.ok) cachedLeaderboard = await res.json();
+            } catch (e) {
+                console.warn('Leaderboard fetch failed:', e);
+            }
+            return cachedLeaderboard;
+        }
+
+        async function saveLeaderboardOnline(lb) {
+            try {
+                await fetch(BLOB_URL, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(lb),
+                });
+            } catch (e) {
+                console.warn('Leaderboard save failed:', e);
+            }
+            // Also cache locally as backup
+            localStorage.setItem('suprlan_lk_leaderboard_backup', JSON.stringify(lb));
+        }
+
+        function getLeaderboard() { return cachedLeaderboard; }
+
+        async function addToLeaderboard(name, s) {
+            await fetchLeaderboard(); // get latest
+            cachedLeaderboard.push({ name: name.toUpperCase(), score: s, date: new Date().toLocaleDateString('ru') });
+            cachedLeaderboard.sort((a, b) => b.score - a.score);
+            if (cachedLeaderboard.length > 20) cachedLeaderboard.length = 20;
+            await saveLeaderboardOnline(cachedLeaderboard);
+            renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+            const lb = cachedLeaderboard;
+            const table = document.getElementById('leaderboardTable');
+            table.innerHTML = `<div class="lb-row header">
+        <div class="lb-rank">#</div><div class="lb-name">ИМЯ</div><div class="lb-score">ОЧКИ</div></div>`;
+            if (!lb.length) {
+                table.innerHTML += `<div class="lb-row"><div class="lb-rank"></div>
+            <div class="lb-name" style="color:rgba(255,255,255,0.3)">Загрузка...</div>
+            <div class="lb-score"></div></div>`;
+                return;
+            }
+            lb.forEach((e, i) => {
+                const rc = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                const m = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
+                table.innerHTML += `<div class="lb-row ${rc}">
+            <div class="lb-rank">${m}</div><div class="lb-name">${e.name}</div>
+            <div class="lb-score">${e.score}</div></div>`;
+            });
+        }
+
+        // ---- Controls ----
+        const LEFT_KEYS = ['ArrowLeft', 'a', 'A', 'ф', 'Ф'];
+        const RIGHT_KEYS = ['ArrowRight', 'd', 'D', 'в', 'В'];
+        const START_KEYS = ['Enter', ' '];
+
+        document.addEventListener('keydown', (e) => {
+            if (state === 'nameinput') return;
+            if (LEFT_KEYS.includes(e.key)) { player.dir = -1; e.preventDefault(); }
+            if (RIGHT_KEYS.includes(e.key)) { player.dir = 1; e.preventDefault(); }
+            if (START_KEYS.includes(e.key)) {
+                if (state === 'start' || state === 'gameover') startGame();
+            }
+        });
+        document.addEventListener('keyup', (e) => {
+            if (LEFT_KEYS.includes(e.key) && player.dir === -1) player.dir = 0;
+            if (RIGHT_KEYS.includes(e.key) && player.dir === 1) player.dir = 0;
+        });
+
+        // Touch buttons
+        const btnLeft = document.getElementById('btnLeft');
+        const btnRight = document.getElementById('btnRight');
+        const btnStart = document.getElementById('btnStart');
+
+        function addTouchEvents(el, dir) {
+            el.addEventListener('touchstart', (e) => { e.preventDefault(); player.dir = dir; });
+            el.addEventListener('touchend', (e) => { e.preventDefault(); if (player.dir === dir) player.dir = 0; });
+            el.addEventListener('mousedown', () => player.dir = dir);
+            el.addEventListener('mouseup', () => { if (player.dir === dir) player.dir = 0; });
+        }
+        addTouchEvents(btnLeft, -1);
+        addTouchEvents(btnRight, 1);
+        btnStart.addEventListener('click', () => { if (state === 'start' || state === 'gameover') startGame(); });
+        btnStart.addEventListener('touchstart', (e) => { e.preventDefault(); if (state === 'start' || state === 'gameover') startGame(); });
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (state === 'start' || state === 'gameover') { startGame(); return; }
+            const rect = canvas.getBoundingClientRect();
+            player.dir = (e.touches[0].clientX - rect.left) < rect.width / 2 ? -1 : 1;
+        });
+        canvas.addEventListener('touchend', (e) => { e.preventDefault(); player.dir = 0; });
+
+        // Name input
+        document.getElementById('submitName').addEventListener('click', () => {
+            const name = document.getElementById('playerName').value.trim() || 'АНОНИМ';
+            addToLeaderboard(name, score);
+            document.getElementById('nameInput').classList.remove('active');
+            document.getElementById('gameOverScreen').classList.add('active');
+            state = 'gameover';
+        });
+        document.getElementById('playerName').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('submitName').click();
+        });
+
+        // ---- Init ----
+        fetchLeaderboard().then(() => renderLeaderboard());
+        gameLoop();
+    </script>
+
+</body>
+
+</html>
