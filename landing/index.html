@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suprlan LK — Монтажная система</title>
+    <meta name="description"
+        content="Монтажная система Suprlan LK для камер видеонаблюдения. Байонетный замок, IP-54, IK10.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <nav
+        style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(10,10,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 2rem;height:56px;display:flex;align-items:center;gap:2rem;">
+        <a href="index.html" style="font-weight:800;font-size:1.1rem;color:#fff;text-decoration:none;">Suprlan <span
+                class="accent">LK</span></a>
+        <div style="display:flex;gap:0.25rem;">
+            <a href="index.html"
+                style="color:#fff;text-decoration:none;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;background:rgba(255,255,255,0.06);">Главная</a>
+            <a href="instruction.html"
+                style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;">Инструкция</a>
+            <a href="examples.html"
+                style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;">Примеры</a>
+        </div>
+    </nav>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loader">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Загрузка 3D моделей…</div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <img src="hero-bg.png" alt="" class="hero-bg-img">
+        </div>
+        <div class="hero-content">
+            <div class="badge">Монтажная система</div>
+            <h1>Suprlan <span class="accent">LK</span></h1>
+            <p class="hero-subtitle">Надёжная фиксация камер видеонаблюдения<br>с уникальным байонетным замком</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value">IP-54</span>
+                    <span class="stat-label">Защита</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">IK10</span>
+                    <span class="stat-label">Ударопрочность</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">15 лет</span>
+                    <span class="stat-label">Срок службы</span>
+                </div>
+            </div>
+            <div class="scroll-hint">
+                <span>Прокрутите вниз</span>
+                <div class="scroll-arrow"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Model Section -->
+    <section class="model-section" id="model-section">
+        <div id="three-container"></div>
+
+        <!-- Cards scroll up like credits, placed at specific heights -->
+        <div class="scroll-cards-track">
+            <!-- Card 1 at ~10% -->
+            <div class="scroll-card" style="top: 10%">
+                <div class="scroll-card-inner left">
+                    <div class="info-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
+                        </svg>
+                    </div>
+                    <h3>Универсальная совместимость</h3>
+                    <p>Адаптирована под камеры любого производителя с посадочным основанием от&nbsp;40
+                        до&nbsp;115&nbsp;мм</p>
+                </div>
+            </div>
+
+            <!-- Card 2 at ~25% -->
+            <div class="scroll-card" style="top: 25%">
+                <div class="scroll-card-inner right">
+                    <div class="info-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <h3>Ударопрочный корпус</h3>
+                    <p>Диэлектрический, не проводит ток. Превосходит металлические аналоги по&nbsp;прочности
+                        и&nbsp;безопасности</p>
+                </div>
+            </div>
+
+            <!-- Card 3 at ~40% -->
+            <div class="scroll-card" style="top: 40%">
+                <div class="scroll-card-inner left">
+                    <div class="info-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                            <line x1="12" y1="22.08" x2="12" y2="12" />
+                        </svg>
+                    </div>
+                    <h3>Байонетный замок</h3>
+                    <p>Уникальный механизм фиксации. Монтаж одной рукой — быстро, надёжно, безопасно</p>
+                </div>
+            </div>
+
+            <!-- Card 4 at ~55% -->
+            <div class="scroll-card" style="top: 55%">
+                <div class="scroll-card-inner right">
+                    <div class="info-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M12 2c1 3 2.5 3.5 3.5 4.5A5 5 0 0 1 17 10c0 3-2.5 5-5 7-2.5-2-5-4-5-7a5 5 0 0 1 1.5-3.5C9.5 5.5 11 5 12 2z" />
+                        </svg>
+                    </div>
+                    <h3>Пожаробезопасность</h3>
+                    <p>Материал не распространяет горение. Безопасен для монтажа на деревянные и&nbsp;композитные
+                        поверхности</p>
+                </div>
+            </div>
+
+            <!-- Card 5 at ~70% -->
+            <div class="scroll-card" style="top: 70%">
+                <div class="scroll-card-inner center" id="card-5">
+                    <div class="info-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="4" />
+                        </svg>
+                    </div>
+                    <h3>2 варианта цвета</h3>
+                    <p>Выберите исполнение под ваш проект</p>
+                    <div class="color-switcher">
+                        <button class="color-btn color-btn-white active" data-color="white" title="Белый">
+                            <span class="color-swatch white-swatch"></span>
+                            Белый
+                        </button>
+                        <button class="color-btn color-btn-black" data-color="black" title="Чёрный">
+                            <span class="color-swatch black-swatch"></span>
+                            Чёрный
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar" id="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Преимущества</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon-svg">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <rect x="4" y="14" width="32" height="16" rx="3" stroke="var(--accent)" stroke-width="2" />
+                        <circle cx="20" cy="22" r="5" stroke="var(--accent)" stroke-width="2" />
+                        <path d="M14 14V10a6 6 0 0 1 12 0v4" stroke="var(--accent)" stroke-width="2" />
+                    </svg>
+                </div>
+                <h3>Байонетный замок</h3>
+                <p>Поворот на 30° — и камера надёжно зафиксирована. Установка одной рукой за секунды.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-svg">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <path d="M20 4L6 12v10c0 8.8 6 16 14 18 8-2 14-9.2 14-18V12L20 4z" stroke="var(--accent)"
+                            stroke-width="2" fill="none" />
+                        <polyline points="14,20 18,24 26,16" stroke="var(--accent)" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+                <h3>Влагозащита IP-54</h3>
+                <p>Модификация ШТОРМ обеспечивает высокую степень защиты от пыли и влаги в любых условиях.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-svg">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="14" stroke="var(--accent)" stroke-width="2" />
+                        <path d="M14 26l6-12 6 12" stroke="var(--accent)" stroke-width="2" fill="none" />
+                        <line x1="16" y1="23" x2="24" y2="23" stroke="var(--accent)" stroke-width="2" />
+                    </svg>
+                </div>
+                <h3>Ударопрочность IK10</h3>
+                <p>ГОСТ 62262, класс 10. Устойчивость к механическим воздействиям и&nbsp;вандализму.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-svg">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <rect x="10" y="8" width="20" height="28" rx="2" stroke="var(--accent)" stroke-width="2" />
+                        <line x1="16" y1="14" x2="24" y2="14" stroke="var(--accent)" stroke-width="2" />
+                        <line x1="16" y1="20" x2="24" y2="20" stroke="var(--accent)" stroke-width="2" />
+                        <circle cx="20" cy="30" r="3" stroke="var(--accent)" stroke-width="2" />
+                    </svg>
+                </div>
+                <h3>-60°C до +80°C</h3>
+                <p>Работает в экстремальных климатических условиях. От Арктики до пустыни.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-svg">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="14" stroke="var(--accent)" stroke-width="2" />
+                        <path d="M20 10v10l7 4" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <h3>15 лет службы</h3>
+                <p>Гарантия до 5 лет. Расчётный срок эксплуатации — до 15 лет в нормальных условиях.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-svg">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <rect x="8" y="12" width="24" height="18" rx="2" stroke="var(--accent)" stroke-width="2" />
+                        <path d="M8 18h24" stroke="var(--accent)" stroke-width="2" />
+                        <circle cx="20" cy="25" r="3" stroke="var(--accent)" stroke-width="2" />
+                        <line x1="20" y1="8" x2="20" y2="12" stroke="var(--accent)" stroke-width="2" />
+                    </svg>
+                </div>
+                <h3>Пломбировка</h3>
+                <p>Защита от несанкционированного доступа с помощью номерных пломб.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specs Section -->
+    <section class="specs" id="specs">
+        <h2 class="section-title">Технические характеристики</h2>
+        <div class="specs-table-wrapper">
+            <table class="specs-table">
+                <tbody>
+                    <tr>
+                        <td class="spec-name">Материал корпуса</td>
+                        <td class="spec-value">ABS PC</td>
+                        <td class="spec-note">Ударопрочный, диэлектрический</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Конструкция</td>
+                        <td class="spec-value">Сборно-разборная</td>
+                        <td class="spec-note">Крышка + основание</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Крепление</td>
+                        <td class="spec-value">Байонетное соединение</td>
+                        <td class="spec-note">Поворот 30°, фиксация одной рукой</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Степень защиты</td>
+                        <td class="spec-value">IP-54</td>
+                        <td class="spec-note">Модификация ШТОРМ</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Ударопрочность</td>
+                        <td class="spec-value">ГОСТ 62262, Класс 10</td>
+                        <td class="spec-note">IK10</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Температурный диапазон</td>
+                        <td class="spec-value">-60°C до +80°C</td>
+                        <td class="spec-note">Экстремальные условия</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Совместимость с камерами</td>
+                        <td class="spec-value">⌀ 40–115 мм</td>
+                        <td class="spec-note">Универсальная платформа</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Грузоподъёмность</td>
+                        <td class="spec-value">До 3 кг</td>
+                        <td class="spec-note">Камера + оборудование</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Габариты</td>
+                        <td class="spec-value">⌀110×115×50 мм</td>
+                        <td class="spec-note">Компактный форм-фактор</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Цвет</td>
+                        <td class="spec-value">Белый / Чёрный</td>
+                        <td class="spec-note">2 варианта исполнения</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Химическая стойкость</td>
+                        <td class="spec-value">Высокая</td>
+                        <td class="spec-note">Устойчив к агрессивным средам</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Пожаробезопасность</td>
+                        <td class="spec-value">Не распространяет горение</td>
+                        <td class="spec-note">Безопасен на деревянных поверхностях</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Пломбировка</td>
+                        <td class="spec-value">Номерные пломбы</td>
+                        <td class="spec-note">Защита от несанкционированного доступа</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Срок службы</td>
+                        <td class="spec-value">До 15 лет</td>
+                        <td class="spec-note">Гарантия 3–5 лет</td>
+                    </tr>
+                    <tr>
+                        <td class="spec-name">Комплектация</td>
+                        <td class="spec-value">Полный монтажный набор</td>
+                        <td class="spec-note">Основание, крышка, трафарет, крепёж, RJ-45 с золотым напылением</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="certifications" id="certifications">
+        <h2 class="section-title">Сертификация</h2>
+        <div class="cert-grid">
+            <a href="#" class="cert-card" target="_blank">
+                <div class="cert-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <path d="M9 15l2 2 4-4" />
+                    </svg>
+                </div>
+                <h3>Сертификат соответствия</h3>
+                <p>Документ подтверждающий соответствие требованиям качества и безопасности</p>
+                <span class="cert-link">Скачать PDF →</span>
+            </a>
+            <a href="#" class="cert-card" target="_blank">
+                <div class="cert-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="8" y1="13" x2="16" y2="13" />
+                        <line x1="8" y1="17" x2="16" y2="17" />
+                    </svg>
+                </div>
+                <h3>Протокол испытаний</h3>
+                <p>Результаты лабораторных испытаний на ударопрочность, влагозащиту и температуру</p>
+                <span class="cert-link">Скачать PDF →</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <h2 class="section-title">Контакты</h2>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-icon-svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                        <path
+                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                </div>
+                <span class="contact-label">Горячая линия</span>
+                <a href="tel:+78005007680" class="contact-value">+7 (800) 500-76-80</a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon-svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                </div>
+                <span class="contact-label">Email</span>
+                <a href="mailto:info@supr.ru" class="contact-value">info@supr.ru</a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon-svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                </div>
+                <span class="contact-label">Сайт</span>
+                <a href="https://www.supr.ru" target="_blank" class="contact-value">www.supr.ru</a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-icon-svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                </div>
+                <span class="contact-label">Режим работы</span>
+                <span class="contact-value">Пн-Пт 9:00-18:00</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 Suprlan LK. Все права защищены.</p>
+    </footer>
+
+    <!-- GSAP from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Three.js via ES module importmap -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
