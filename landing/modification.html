@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suprlan LK v2 — Новая модификация</title>
+    <meta name="description"
+        content="Новая модификация монтажной системы Suprlan LK: увеличенный корпус, адаптер для квадратной трубы-штатива, модульная система.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ========== New Modification Page Styles ========== */
+
+        .mod-hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px 60px;
+            position: relative;
+            background: radial-gradient(ellipse at 30% 20%, rgba(230, 57, 70, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(100, 50, 255, 0.05) 0%, transparent 60%),
+                var(--bg-primary);
+        }
+
+        .mod-hero-content {
+            max-width: 900px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stage-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border: 1px solid rgba(230, 57, 70, 0.3);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 36px;
+            background: rgba(230, 57, 70, 0.08);
+            backdrop-filter: blur(8px);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .stage-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(230, 57, 70, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(230, 57, 70, 0.2);
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .mod-hero h1 {
+            font-size: clamp(42px, 8vw, 90px);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -3px;
+            margin-bottom: 24px;
+        }
+
+        .mod-hero h1 .v2 {
+            background: linear-gradient(135deg, var(--accent) 0%, #ff6b7a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mod-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 650px;
+            margin: 0 auto 40px;
+        }
+
+        .mod-highlights {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .mod-highlight {
+            text-align: center;
+        }
+
+        .mod-highlight-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .mod-highlight-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* ========== 3D Editor Section ========== */
+
+        .viewer-section {
+            padding: 80px 40px;
+            background: var(--bg-secondary);
+        }
+
+        .viewer-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .viewer-intro {
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .editor-wrap {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            padding-right: 16px;
+            border-right: 1px solid var(--border);
+            margin-right: 8px;
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .toolbar-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .editor-canvas-wrap {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #0d0d14;
+        }
+
+        .editor-canvas-wrap canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Position readout panel */
+        .pos-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border-top: 1px solid var(--border);
+        }
+
+        .pos-card {
+            background: var(--bg-card);
+            padding: 12px 16px;
+        }
+
+        .pos-card .part-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pos-card .part-name .color-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .pos-values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            font-size: 0.72rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pos-values .label {
+            color: var(--text-muted);
+        }
+
+        .pos-values .value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .viewer-btn {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .viewer-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
+        }
+
+        .viewer-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .pos-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-canvas-wrap {
+                height: 400px;
+            }
+        }
+
+        /* ========== Features Grid ========== */
+
+        .features-section {
+            padding: 100px 40px;
+            background: var(--bg-primary);
+        }
+
+        .features-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .features-section .section-sub {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            font-size: 1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            padding: 32px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ========== Photo Gallery ========== */
+
+        .gallery-section {
+            padding: 100px 40px;
+            background: var(--bg-secondary);
+        }
+
+        .gallery-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .gallery-section .section-sub {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            font-size: 1rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .gallery-item:hover {
+            border-color: var(--border-hover);
+            transform: scale(1.02);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item .caption {
+            padding: 16px 20px;
+        }
+
+        .gallery-item .caption h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .gallery-item .caption p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Fullscreen overlay for gallery */
+        .gallery-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(16px);
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        .gallery-overlay.active {
+            display: flex;
+        }
+
+        .gallery-overlay img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ========== Specs Table ========== */
+
+        .specs-section {
+            padding: 80px 40px;
+            background: var(--bg-primary);
+        }
+
+        .specs-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+        }
+
+        .specs-table {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .specs-table tr {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .specs-table td {
+            padding: 16px 20px;
+            font-size: 0.9rem;
+        }
+
+        .specs-table td:first-child {
+            color: var(--text-muted);
+            font-weight: 500;
+            width: 40%;
+        }
+
+        .specs-table td:last-child {
+            font-weight: 600;
+        }
+
+        /* ========== Responsive ========== */
+
+        @media (max-width: 768px) {
+            .viewers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mod-highlights {
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <nav
+        style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(10,10,15,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 2rem;height:56px;display:flex;align-items:center;gap:2rem;">
+        <a href="index.html" style="font-weight:800;font-size:1.1rem;color:#fff;text-decoration:none;">Suprlan <span
+                class="accent">LK</span></a>
+        <div style="display:flex;gap:0.25rem;">
+            <a href="index.html"
+                style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;">Главная</a>
+            <a href="modification.html"
+                style="color:#fff;text-decoration:none;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;background:rgba(230,57,70,0.15);border:1px solid rgba(230,57,70,0.3);">🔥
+                LK v2</a>
+            <a href="instruction.html"
+                style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;">Инструкция</a>
+            <a href="examples.html"
+                style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;">Примеры</a>
+            <a href="game.html"
+                style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;">Игра</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="mod-hero">
+        <div class="mod-hero-content">
+            <div class="stage-badge">Pre-Production Validation</div>
+            <h1>Suprlan LK <span class="v2">v2</span></h1>
+            <p class="mod-subtitle">
+                Увеличенный корпус с расширенным внутренним пространством, новый адаптер
+                для квадратной трубы-штатива и модернизированный дизайн. Прототипы проходят
+                финальную валидацию перед запуском серийного производства пресс-формы.
+            </p>
+            <div class="mod-highlights">
+                <div class="mod-highlight">
+                    <div class="mod-highlight-value">IK10</div>
+                    <div class="mod-highlight-label">Ударопрочность</div>
+                </div>
+                <div class="mod-highlight">
+                    <div class="mod-highlight-value">ABS/PC</div>
+                    <div class="mod-highlight-label">Армалой</div>
+                </div>
+                <div class="mod-highlight">
+                    <div class="mod-highlight-value">+40%</div>
+                    <div class="mod-highlight-label">Внутр. объём</div>
+                </div>
+                <div class="mod-highlight">
+                    <div class="mod-highlight-value">6+</div>
+                    <div class="mod-highlight-label">Кабельных вводов</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <h2>Что нового в <span class="accent">v2</span></h2>
+        <p class="section-sub">Ключевые улучшения по сравнению с текущей версией</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📦</div>
+                <h3>Увеличенный корпус</h3>
+                <p>Расширенное внутреннее пространство для размещения дополнительного оборудования,
+                    коммутации и кабельных запасов. Улучшенная эргономика монтажа.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔌</div>
+                <h3>Больше кабельных вводов</h3>
+                <p>Увеличенное количество кабельных вводов для многокамерных конфигураций
+                    и сложных систем с дополнительным питанием, сетью и сигнальными кабелями.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>Адаптер для квадратной трубы</h3>
+                <p>Новый адаптер и квадратная труба-штатив позволяют устанавливать систему на любые поверхности:
+                    мезонины, полы, потолки в аэропортах, складах, городской инфраструктуре.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏗️</div>
+                <h3>Модульная система крепления</h3>
+                <p>Лёгкая и гибкая система с возможностью комбинирования камер.
+                    Нагрузка определяется трубой: пластик для стандартных задач,
+                    металл — для усиленных конфигураций.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Армалой ABS/PC</h3>
+                <p>Материал корпуса — сополимер ABS/PC (Армалой).
+                    Класс ударопрочности IK10 — выдерживает удары энергией 20 Дж.
+                    Устойчив к УФ, влаге и температурным перепадам.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Универсальное применение</h3>
+                <p>От компактных комплексов видеорегистрации на городской инфраструктуре
+                    до масштабных систем видеонаблюдения на промышленных объектах,
+                    в аэропортах и складских комплексах.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Editor Section -->
+    <section class="viewer-section" id="viewer-section">
+        <h2>3D редактор <span class="accent">v2</span></h2>
+        <p class="viewer-intro">Все компоненты в едином пространстве. Кликните на модель для выбора,
+            перемещайте и вращайте. Координаты отображаются в панели снизу.</p>
+        <div class="editor-wrap">
+            <!-- Toolbar -->
+            <div class="editor-toolbar">
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Режим:</span>
+                    <button class="viewer-btn active" id="btn-translate" onclick="setTransformMode('translate')">↔
+                        Позиция</button>
+                    <button class="viewer-btn" id="btn-rotate" onclick="setTransformMode('rotate')">⟳ Вращение</button>
+                    <button class="viewer-btn" id="btn-scale" onclick="setTransformMode('scale')">⤢ Масштаб</button>
+                </div>
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Вид:</span>
+                    <button class="viewer-btn" onclick="setCameraView('top')">Сверху</button>
+                    <button class="viewer-btn" onclick="setCameraView('front')">Спереди</button>
+                    <button class="viewer-btn" onclick="setCameraView('side')">Сбоку</button>
+                    <button class="viewer-btn" onclick="setCameraView('reset')">↻ Сброс</button>
+                </div>
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Опции:</span>
+                    <button class="viewer-btn" id="btn-wireframe" onclick="toggleWireframe()">Wireframe</button>
+                    <button class="viewer-btn" id="btn-axes" onclick="toggleAxes()">Оси</button>
+                    <button class="viewer-btn" id="btn-grid" onclick="toggleGrid()">Сетка</button>
+                </div>
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Выбор:</span>
+                    <button class="viewer-btn" id="sel-krishka" onclick="selectModel('krishka')"
+                        style="border-color:rgba(230,57,70,0.5)">Крышка</button>
+                    <button class="viewer-btn" id="sel-kronshtein" onclick="selectModel('kronshtein')"
+                        style="border-color:rgba(70,130,230,0.5)">Кронштейн</button>
+                    <button class="viewer-btn" id="sel-osnovanie" onclick="selectModel('osnovanie')"
+                        style="border-color:rgba(70,230,100,0.5)">Основание</button>
+                </div>
+            </div>
+            <!-- 3D Canvas -->
+            <div class="editor-canvas-wrap" id="editor-canvas"></div>
+            <!-- Position Readout -->
+            <div class="pos-panel">
+                <div class="pos-card" id="pos-krishka">
+                    <div class="part-name"><span class="color-dot" style="background:#e63946"></span> Крышка</div>
+                    <div class="pos-values">
+                        <span class="label">Pos X:</span><span class="value" id="pk-px">0.00</span>
+                        <span class="label">Pos Y:</span><span class="value" id="pk-py">0.00</span>
+                        <span class="label">Pos Z:</span><span class="value" id="pk-pz">0.00</span>
+                        <span class="label">Rot X:</span><span class="value" id="pk-rx">0.00</span>
+                        <span class="label">Rot Y:</span><span class="value" id="pk-ry">0.00</span>
+                        <span class="label">Rot Z:</span><span class="value" id="pk-rz">0.00</span>
+                    </div>
+                </div>
+                <div class="pos-card" id="pos-kronshtein">
+                    <div class="part-name"><span class="color-dot" style="background:#4682e6"></span> Кронштейн</div>
+                    <div class="pos-values">
+                        <span class="label">Pos X:</span><span class="value" id="pkr-px">0.00</span>
+                        <span class="label">Pos Y:</span><span class="value" id="pkr-py">0.00</span>
+                        <span class="label">Pos Z:</span><span class="value" id="pkr-pz">0.00</span>
+                        <span class="label">Rot X:</span><span class="value" id="pkr-rx">0.00</span>
+                        <span class="label">Rot Y:</span><span class="value" id="pkr-ry">0.00</span>
+                        <span class="label">Rot Z:</span><span class="value" id="pkr-rz">0.00</span>
+                    </div>
+                </div>
+                <div class="pos-card" id="pos-osnovanie">
+                    <div class="part-name"><span class="color-dot" style="background:#46e664"></span> Основание</div>
+                    <div class="pos-values">
+                        <span class="label">Pos X:</span><span class="value" id="po-px">0.00</span>
+                        <span class="label">Pos Y:</span><span class="value" id="po-py">0.00</span>
+                        <span class="label">Pos Z:</span><span class="value" id="po-pz">0.00</span>
+                        <span class="label">Rot X:</span><span class="value" id="po-rx">0.00</span>
+                        <span class="label">Rot Y:</span><span class="value" id="po-ry">0.00</span>
+                        <span class="label">Rot Z:</span><span class="value" id="po-rz">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Gallery Section -->
+    <section class="gallery-section">
+        <h2>Прототипы <span class="accent">v2</span></h2>
+        <p class="section-sub">Фотографии прототипов, проходящих финальную валидацию. Клик для увеличения.</p>
+        <div class="gallery-grid">
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.03.44.jpeg" alt="Потолочный монтаж"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>Подвес на квадратной трубе</h4>
+                    <p>Двухкамерная конфигурация на подвесе через потолочную решётку мезонина. Демонстрирует гибкость
+                        системы.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.03.48.jpeg" alt="Вид сбоку"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>Система на потолочном штативе</h4>
+                    <p>Вид сбоку: квадратная труба с двумя корпусами LK v2 через адаптер. Углы наклона камер
+                        настраиваются независимо.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.03.49.jpeg" alt="Корпус крупный план"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>Увеличенный корпус крупным планом</h4>
+                    <p>Новый профиль корпуса: увеличенная высота для кабельной коммутации и дополнительного
+                        оборудования.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.03.39.jpeg" alt="Вид сверху"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>Вид сверху — основание и кронштейн</h4>
+                    <p>Основание v2 на решётке мезонина с кронштейном бокового крепления. Видны увеличенные монтажные
+                        отверстия.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.03.41.jpeg" alt="Корпус в сборе"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>Корпус в сборе — вид под углом</h4>
+                    <p>Крышка + основание в сборе на металлической решётке. Байонетный замок обеспечивает быструю
+                        фиксацию.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.03.46.jpeg" alt="Монтаж снизу"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>Вид снизу через мезонин</h4>
+                    <p>Кронштейн прочно фиксирует корпус к решётке мезонина. Крепёж скрыт от наблюдателя — чистый
+                        внешний вид.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.03.50.jpeg" alt="Монтаж на лестнице"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>Монтаж на металлоконструкциях</h4>
+                    <p>Установка на ступенчатой решётке — демонстрация универсальности адаптера для нестандартных
+                        поверхностей.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.03.51.jpeg" alt="За решёткой"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>Камера за защитной решёткой</h4>
+                    <p>Корпус LK v2 закреплён за мелкоячеистой решёткой — антивандальная конфигурация для склада.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.04.26.jpeg" alt="Фото 1" loading="lazy">
+                <div class="caption">
+                    <h4>Адаптер квадратной трубы</h4>
+                    <p>Крупный план адаптера: фиксация корпуса на квадратном профиле трубы-штатива.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.04.27.jpeg" alt="Фото 2" loading="lazy">
+                <div class="caption">
+                    <h4>Детали кронштейна</h4>
+                    <p>Кронштейн из ABS/PC обеспечивает надёжное соединение корпуса с монтажной поверхностью.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/photo_2026-03-06 11.04.29.jpeg" alt="Фото 3" loading="lazy">
+                <div class="caption">
+                    <h4>Боковое крепление</h4>
+                    <p>Боковой вид установленного корпуса. Демонстрация профиля и пропорций новой модификации.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/Снимок экрана 2026-03-06 в 12.09.14.png" alt="CAD модель"
+                    loading="lazy">
+                <div class="caption">
+                    <h4>3D модель в SolidWorks</h4>
+                    <p>Инженерная модель v2 в сборе — крышка, основание и кронштейн.</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(this)">
+                <img src="../images cases/новая модификация/Снимок экрана 2026-03-06 в 11.44.01.png"
+                    alt="Квадратная труба" loading="lazy">
+                <div class="caption">
+                    <h4>Квадратная труба-штатив</h4>
+                    <p>Профиль квадратной трубы из ABS/PC. В ассортименте также металлическая версия для усиленной
+                        нагрузки.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Overlay -->
+    <div class="gallery-overlay" id="gallery-overlay" onclick="closeGallery()">
+        <img id="gallery-overlay-img" src="" alt="">
+    </div>
+
+    <!-- Specs Table -->
+    <section class="specs-section">
+        <h2>Характеристики <span class="accent">v2</span></h2>
+        <table class="specs-table">
+            <tr>
+                <td>Материал корпуса</td>
+                <td>Армалой ABS/PC (сополимер)</td>
+            </tr>
+            <tr>
+                <td>Класс ударопрочности</td>
+                <td>IK10 (20 Дж)</td>
+            </tr>
+            <tr>
+                <td>Материал трубы-штатива</td>
+                <td>ABS/PC (пластик) / Сталь (опция)</td>
+            </tr>
+            <tr>
+                <td>Профиль трубы</td>
+                <td>Квадратный</td>
+            </tr>
+            <tr>
+                <td>Кабельные вводы</td>
+                <td>6+ (увеличено)</td>
+            </tr>
+            <tr>
+                <td>Замок</td>
+                <td>Байонетный (совместим с v1)</td>
+            </tr>
+            <tr>
+                <td>Защита</td>
+                <td>IP-54</td>
+            </tr>
+            <tr>
+                <td>Стадия</td>
+                <td>Pre-Production Validation (PVT)</td>
+            </tr>
+        </table>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 Suprlan LK. Все права защищены.</p>
+    </footer>
+
+    <!-- Three.js for 3D viewers -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { TransformControls } from 'three/addons/controls/TransformControls.js';
+        import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+
+        // ===== Scene setup =====
+        const container = document.getElementById('editor-canvas');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0d0d14);
+
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 5000);
+        camera.position.set(200, 150, 250);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Orbit controls
+        const orbit = new OrbitControls(camera, renderer.domElement);
+        orbit.enableDamping = true;
+        orbit.dampingFactor = 0.08;
+        orbit.target.set(0, 0, 0);
+
+        // Transform controls
+        const transform = new TransformControls(camera, renderer.domElement);
+        transform.addEventListener('dragging-changed', (e) => {
+            orbit.enabled = !e.value;
+        });
+        transform.addEventListener('objectChange', updatePositionPanel);
+        scene.add(transform);
+
+        // Lights
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        const dir1 = new THREE.DirectionalLight(0xffffff, 1.2);
+        dir1.position.set(5, 10, 7);
+        scene.add(dir1);
+        const dir2 = new THREE.DirectionalLight(0x8888ff, 0.4);
+        dir2.position.set(-5, -5, -5);
+        scene.add(dir2);
+        const dir3 = new THREE.DirectionalLight(0xffaa88, 0.3);
+        dir3.position.set(10, -3, 5);
+        scene.add(dir3);
+
+        // Grid & Axes
+        const grid = new THREE.GridHelper(400, 40, 0x333355, 0x222244);
+        scene.add(grid);
+        const axes = new THREE.AxesHelper(200);
+        axes.visible = false;
+        scene.add(axes);
+
+        // ===== Models =====
+        const models = {};
+        const modelColors = {
+            krishka: 0xe63946,
+            kronshtein: 0x4682e6,
+            osnovanie: 0x46e664
+        };
+        const modelFiles = {
+            krishka: 'krishka-v2.stl',
+            kronshtein: 'kronshtein-v2.stl',
+            osnovanie: 'osnovanie-v2.stl'
+        };
+        const modelOffsets = {
+            krishka: { x: 0, y: 80, z: 0 },
+            kronshtein: { x: 80, y: 0, z: 0 },
+            osnovanie: { x: 0, y: 0, z: 0 }
+        };
+
+        let selectedModel = null;
+        const loader = new STLLoader();
+        let loadCount = 0;
+
+        function loadModel(name) {
+            loader.load(modelFiles[name], (geometry) => {
+                geometry.computeVertexNormals();
+                geometry.computeBoundingBox();
+
+                const material = new THREE.MeshPhysicalMaterial({
+                    color: 0xdddddd,
+                    metalness: 0.15,
+                    roughness: 0.45,
+                    clearcoat: 0.3,
+                    emissive: modelColors[name],
+                    emissiveIntensity: 0.03,
+                });
+
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.userData.name = name;
+
+                // Center geometry
+                const box = geometry.boundingBox;
+                const center = new THREE.Vector3();
+                box.getCenter(center);
+                geometry.translate(-center.x, -center.y, -center.z);
+
+                // Scale to fit ~80 units max dim
+                const size = new THREE.Vector3();
+                box.getSize(size);
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 80 / maxDim;
+                mesh.scale.setScalar(scale);
+
+                // Set initial offset
+                mesh.position.set(modelOffsets[name].x, modelOffsets[name].y, modelOffsets[name].z);
+
+                scene.add(mesh);
+                models[name] = mesh;
+                loadCount++;
+
+                // Auto-select first model
+                if (loadCount === 1) {
+                    selectModelInternal(name);
+                }
+
+                updatePositionPanel();
+                console.log(`Loaded ${name}: scale=${scale.toFixed(4)}, bbox=${size.x.toFixed(1)}x${size.y.toFixed(1)}x${size.z.toFixed(1)}`);
+            }, undefined, (err) => {
+                console.error(`Error loading ${name}:`, err);
+            });
+        }
+
+        // Load all models
+        Object.keys(modelFiles).forEach(loadModel);
+
+        // ===== Selection =====
+        function selectModelInternal(name) {
+            selectedModel = name;
+            const mesh = models[name];
+            if (!mesh) return;
+
+            transform.attach(mesh);
+
+            // Update button states
+            ['krishka', 'kronshtein', 'osnovanie'].forEach(n => {
+                const btn = document.getElementById('sel-' + n);
+                if (btn) btn.classList.toggle('active', n === name);
+            });
+
+            // Highlight selected, dim others
+            Object.entries(models).forEach(([n, m]) => {
+                if (n === name) {
+                    m.material.emissiveIntensity = 0.1;
+                    m.material.opacity = 1;
+                } else {
+                    m.material.emissiveIntensity = 0.02;
+                    m.material.opacity = 0.7;
+                }
+            });
+        }
+
+        window.selectModel = (name) => {
+            if (models[name]) selectModelInternal(name);
+        };
+
+        // Click to select
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        renderer.domElement.addEventListener('click', (e) => {
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const meshes = Object.values(models);
+            const hits = raycaster.intersectObjects(meshes);
+            if (hits.length > 0) {
+                const name = hits[0].object.userData.name;
+                if (name) selectModelInternal(name);
+            }
+        });
+
+        // ===== Transform mode =====
+        window.setTransformMode = (mode) => {
+            transform.setMode(mode);
+            ['translate', 'rotate', 'scale'].forEach(m => {
+                document.getElementById('btn-' + m).classList.toggle('active', m === mode);
+            });
+        };
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            switch (e.key.toLowerCase()) {
+                case 'g': window.setTransformMode('translate'); break;
+                case 'r': window.setTransformMode('rotate'); break;
+                case 's': window.setTransformMode('scale'); break;
+                case '1': window.selectModel('krishka'); break;
+                case '2': window.selectModel('kronshtein'); break;
+                case '3': window.selectModel('osnovanie'); break;
+            }
+        });
+
+        // ===== Camera views =====
+        window.setCameraView = (view) => {
+            const d = 250;
+            switch (view) {
+                case 'top': camera.position.set(0, d, 0.1); break;
+                case 'front': camera.position.set(0, 30, d); break;
+                case 'side': camera.position.set(d, 30, 0); break;
+                case 'reset': camera.position.set(200, 150, 250); break;
+            }
+            orbit.target.set(0, 30, 0);
+            orbit.update();
+        };
+
+        // ===== Toggles =====
+        window.toggleWireframe = () => {
+            const btn = document.getElementById('btn-wireframe');
+            const active = btn.classList.toggle('active');
+            Object.values(models).forEach(m => { m.material.wireframe = active; });
+        };
+
+        window.toggleAxes = () => {
+            const btn = document.getElementById('btn-axes');
+            axes.visible = btn.classList.toggle('active');
+        };
+
+        window.toggleGrid = () => {
+            const btn = document.getElementById('btn-grid');
+            btn.classList.toggle('active');
+            grid.visible = !btn.classList.contains('active');
+        };
+
+        // ===== Position readout =====
+        function updatePositionPanel() {
+            const toDeg = (r) => (r * 180 / Math.PI).toFixed(1);
+            const toPos = (v) => v.toFixed(2);
+
+            const mapping = {
+                krishka: { px: 'pk-px', py: 'pk-py', pz: 'pk-pz', rx: 'pk-rx', ry: 'pk-ry', rz: 'pk-rz' },
+                kronshtein: { px: 'pkr-px', py: 'pkr-py', pz: 'pkr-pz', rx: 'pkr-rx', ry: 'pkr-ry', rz: 'pkr-rz' },
+                osnovanie: { px: 'po-px', py: 'po-py', pz: 'po-pz', rx: 'po-rx', ry: 'po-ry', rz: 'po-rz' }
+            };
+
+            Object.entries(models).forEach(([name, mesh]) => {
+                const ids = mapping[name];
+                if (!ids) return;
+                document.getElementById(ids.px).textContent = toPos(mesh.position.x);
+                document.getElementById(ids.py).textContent = toPos(mesh.position.y);
+                document.getElementById(ids.pz).textContent = toPos(mesh.position.z);
+                document.getElementById(ids.rx).textContent = toDeg(mesh.rotation.x) + '°';
+                document.getElementById(ids.ry).textContent = toDeg(mesh.rotation.y) + '°';
+                document.getElementById(ids.rz).textContent = toDeg(mesh.rotation.z) + '°';
+            });
+        }
+
+        // ===== Animation loop =====
+        function animate() {
+            requestAnimationFrame(animate);
+            orbit.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // ===== Resize =====
+        const resizeObserver = new ResizeObserver(() => {
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+        resizeObserver.observe(container);
+
+        // Update panel periodically
+        setInterval(updatePositionPanel, 200);
+    </script>
+
+    <!-- Gallery overlay script -->
+    <script>
+        function openGallery(item) {
+            const img = item.querySelector('img');
+            const overlay = document.getElementById('gallery-overlay');
+            const overlayImg = document.getElementById('gallery-overlay-img');
+            overlayImg.src = img.src;
+            overlay.classList.add('active');
+        }
+
+        function closeGallery() {
+            document.getElementById('gallery-overlay').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeGallery();
+        });
+    </script>
+
+</body>
+
+</html>
