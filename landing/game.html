@@ -1098,10 +1098,9 @@
         // ---- Game Loop ----
         function gameLoop() { update(); render(); requestAnimationFrame(gameLoop); }
 
-        // ---- Online Leaderboard (jsonblob.com via CORS proxy) ----
-        const BLOB_ID = '019cb3c4-7c9b-77a8-b312-596e1eccdc06';
+        // ---- Online Leaderboard (jsonblob.com — direct, CORS-friendly) ----
+        const BLOB_ID = '019d0788-928e-7395-abc1-d1d653ae55c8';
         const BLOB_URL = `https://jsonblob.com/api/jsonBlob/${BLOB_ID}`;
-        const PROXY_URL = `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOB_URL)}`;
         let cachedLeaderboard = [];
 
         // Load from localStorage backup on startup
@@ -1112,18 +1111,19 @@
 
         async function fetchLeaderboard() {
             try {
-                // Try CORS proxy first
-                const res = await fetch(PROXY_URL, { signal: AbortSignal.timeout(3000) });
+                const res = await fetch(BLOB_URL, {
+                    headers: { 'Accept': 'application/json' },
+                    signal: AbortSignal.timeout(5000)
+                });
                 if (res.ok) {
                     const data = await res.json();
-                    if (Array.isArray(data) && data.length > 0) {
+                    if (Array.isArray(data)) {
                         cachedLeaderboard = data;
                         localStorage.setItem('suprlan_lk_leaderboard_backup', JSON.stringify(data));
                     }
                 }
             } catch (e) {
-                console.warn('Online leaderboard fetch failed, using local backup:', e);
-                // fallback: use localStorage
+                console.warn('Leaderboard fetch failed, using local backup:', e);
                 try {
                     const backup = localStorage.getItem('suprlan_lk_leaderboard_backup');
                     if (backup) cachedLeaderboard = JSON.parse(backup);
@@ -1135,16 +1135,27 @@
         async function saveLeaderboardOnline(lb) {
             // Always save locally first
             localStorage.setItem('suprlan_lk_leaderboard_backup', JSON.stringify(lb));
-            // Try saving online (may fail due to CORS, that's ok)
-            try {
-                await fetch(BLOB_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(lb),
-                });
-            } catch (e) {
-                console.warn('Online leaderboard save failed (CORS), saved locally:', e);
+            // Save online with retry
+            for (let attempt = 0; attempt < 2; attempt++) {
+                try {
+                    const res = await fetch(BLOB_URL, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(lb),
+                        signal: AbortSignal.timeout(5000)
+                    });
+                    if (res.ok) {
+                        console.log('Leaderboard saved online ✓');
+                        return;
+                    }
+                } catch (e) {
+                    console.warn(`Online save attempt ${attempt + 1} failed:`, e);
+                }
             }
+            console.warn('Online leaderboard save failed after retries, saved locally');
         }
 
         function getLeaderboard() { return cachedLeaderboard; }
