@@ -1098,8 +1098,8 @@
         // ---- Game Loop ----
         function gameLoop() { update(); render(); requestAnimationFrame(gameLoop); }
 
-        // ---- Online Leaderboard (own VPS API — reliable, CORS-safe) ----
-        const LB_API = 'http://92.38.95.125:3777/api/leaderboard';
+        // ---- Online Leaderboard (HTTPS via n8n.mountainbox.ru — reliable, CORS-safe) ----
+        const LB_API = 'https://n8n.mountainbox.ru/api/leaderboard';
         let cachedLeaderboard = [];
 
         // Load from localStorage backup on startup
